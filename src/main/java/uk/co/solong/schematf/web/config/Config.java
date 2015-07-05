@@ -1,5 +1,4 @@
-package uk.co.solong.schema.web.config;
-
+package uk.co.solong.schematf.web.config;
 
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;
@@ -13,15 +12,13 @@ import org.springframework.context.annotation.Import;
 
 import uk.co.solong.application.annotations.RootConfiguration;
 import uk.co.solong.application.config.PropertyPlaceholderConfig;
-import uk.co.solong.hatf2.core.config.MongoCollectionConfig;
 
 @Configuration
 @RootConfiguration
 @Import({ PropertyPlaceholderConfig.class, RepositoryRestMvcAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class,
         SpringDataWebAutoConfiguration.class, WebMvcAutoConfiguration.class, EmbeddedServletContainerAutoConfiguration.class,
-        DispatcherServletAutoConfiguration.class, ServerPropertiesAutoConfiguration.class, ApplicataionControllerConfig.class, SchemaProviderConfig.class,
-        IndexControllerConfig.class, SearchControllerConfig.class, MongoCollectionConfig.class, SearchDaoConfig.class, SignedCookieManagerConfig.class,
-        SessionControllerConfig.class, SessionManagerConfig.class })
+        DispatcherServletAutoConfiguration.class, ServerPropertiesAutoConfiguration.class, CredentialsConfig.class, SchemaControllerConfig.class,
+        SchemaDaoConfig.class, SchemaPollerConfig.class, TF2TemplateConfig.class })
 public class Config {
 
 }
