@@ -1,4 +1,4 @@
-package uk.co.solong.schematf.web.config;
+package uk.co.solong.schematf.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

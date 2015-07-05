@@ -1,4 +1,4 @@
-package uk.co.solong.schematf.web.config;
+package uk.co.solong.schematf.config;
 
 import org.springframework.boot.autoconfigure.data.rest.RepositoryRestMvcAutoConfiguration;
 import org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration;

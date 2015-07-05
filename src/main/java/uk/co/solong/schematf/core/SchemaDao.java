@@ -37,7 +37,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 public class SchemaDao {
-    private final ObjectMapper m = new ObjectMapper();
+    private final ObjectMapper jsonMapper = new ObjectMapper();
     private final CacheLoader<String, JsonNode> loader;
     private final LoadingCache<String, JsonNode> cache;
     private static final Logger logger = LoggerFactory.getLogger(SchemaDao.class);
@@ -45,7 +45,12 @@ public class SchemaDao {
     private final Credentials credentials;
     private final CredentialsProvider credentialsProvider;
     private static final String CACHE_KEY = "latest";
-
+    private static final String TF2_SCHEMA_FOLDER = "tf2";
+    private static final String TF2_SCHEMA_FILE = "schema.json";
+    private static final String TF2_SCHEMA_FULLPATH = File.separator + TF2_SCHEMA_FOLDER + File.separator + TF2_SCHEMA_FILE;
+    private static final String ORIGIN = "origin";
+    private static final String MASTER = "master";
+    private static final String ORIGIN_MASTER = "origin/master";
     /**
      * Persists the schema to git by committing it and pushing it out.<br/>
      * Cache is invalidated.
@@ -95,8 +100,8 @@ public class SchemaDao {
         Git git = null;
         try {
             git = new Git(repository);
-            git.fetch().setRemote("origin").call();
-            git.reset().setMode(ResetType.HARD).setRef("origin/master").call();
+            git.fetch().setRemote(ORIGIN).call();
+            git.reset().setMode(ResetType.HARD).setRef(ORIGIN_MASTER).call();
         } finally {
             if (git != null) {
                 git.close();
@@ -112,7 +117,7 @@ public class SchemaDao {
 
     private JsonNode loadSchemaFromDisk() throws JsonProcessingException, IOException {
         // load the schema from disk
-        return m.readTree(new File(directory + "/schema.json"));
+        return jsonMapper.readTree(new File(directory + TF2_SCHEMA_FULLPATH));
     }
 
     private void cloneRepo() throws InvalidRemoteException, TransportException, GitAPIException, IOException {
@@ -120,7 +125,7 @@ public class SchemaDao {
         File localPath = new File(directory);
         Git git = null;
         try {
-            git = Git.cloneRepository().setURI(credentials.getRemoteUrl()).setDirectory(localPath).setBranch("master").call();
+            git = Git.cloneRepository().setURI(credentials.getRemoteUrl()).setDirectory(localPath).setBranch(MASTER).call();
         } finally {
             if (git != null) {
                 git.close();
@@ -130,7 +135,7 @@ public class SchemaDao {
 
     private void saveSchemaContents(JsonNode node) throws JsonGenerationException, JsonMappingException, IOException {
         // save the schema contents to disk
-        m.writeValue(new File(directory + "/schema.json"), node);
+        jsonMapper.writeValue(new File(directory + TF2_SCHEMA_FULLPATH), node);
     }
 
     private void cacheInvalidate() {
