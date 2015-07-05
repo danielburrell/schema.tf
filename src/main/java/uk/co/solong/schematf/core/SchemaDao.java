@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import org.eclipse.jgit.api.Git;
@@ -26,6 +28,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.co.solong.schematf.auth.Credentials;
+import uk.co.solong.steam4j.tf2.data.schema.TF2Schema;
+import uk.co.solong.steam4j.tf2.data.schema.TF2SchemaItem;
+import uk.co.solong.steam4j.tf2.data.schema.TF2SchemaQuality;
 
 import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -44,13 +49,16 @@ public class SchemaDao {
     private final String directory;
     private final Credentials credentials;
     private final CredentialsProvider credentialsProvider;
-    private static final String CACHE_KEY = "latest";
+    private static final String CACHE_SCHEMA_KEY = "latest";
+    private static final String CACHE_ITEMS_KEY = "items";
+    private static final String CACHE_QUALITIES_KEY = "qualities";
     private static final String TF2_SCHEMA_FOLDER = "tf2";
     private static final String TF2_SCHEMA_FILE = "schema.json";
     private static final String TF2_SCHEMA_FULLPATH = File.separator + TF2_SCHEMA_FOLDER + File.separator + TF2_SCHEMA_FILE;
     private static final String ORIGIN = "origin";
     private static final String MASTER = "master";
     private static final String ORIGIN_MASTER = "origin/master";
+
     /**
      * Persists the schema to git by committing it and pushing it out.<br/>
      * Cache is invalidated.
@@ -75,9 +83,7 @@ public class SchemaDao {
      * @throws ExecutionException
      */
     public JsonNode getLatestSchema() throws ExecutionException {
-        // get the latest schema from a cache. cacheloader will pull the latest
-        // from github if necessary
-        return cache.get(CACHE_KEY);
+        return cache.get(CACHE_SCHEMA_KEY);
     }
 
     /**
@@ -115,9 +121,34 @@ public class SchemaDao {
         return (f.exists());
     }
 
-    private JsonNode loadSchemaFromDisk() throws JsonProcessingException, IOException {
+    private JsonNode loadDataFromDisk(String key) throws JsonProcessingException, IOException {
         // load the schema from disk
-        return jsonMapper.readTree(new File(directory + TF2_SCHEMA_FULLPATH));
+        switch (key) {
+       
+        case CACHE_SCHEMA_KEY:
+            return jsonMapper.readTree(new File(directory + TF2_SCHEMA_FULLPATH));
+        case CACHE_ITEMS_KEY:
+            return getItemsFromSchema(jsonMapper.readTree(new File(directory + TF2_SCHEMA_FULLPATH)));
+        case CACHE_QUALITIES_KEY:
+            return getQualitiesFromSchema(jsonMapper.readTree(new File(directory + TF2_SCHEMA_FULLPATH)));
+        default:
+            throw new RuntimeException("Unknown cache key");
+        }
+        
+    }
+
+    private JsonNode getQualitiesFromSchema(JsonNode schema) {
+        TF2Schema tf2Schema = new TF2Schema(schema);
+        Map<Integer, TF2SchemaQuality> qualityMap = tf2Schema.getCompleteQualityMap();
+        JsonNode node = jsonMapper.valueToTree(qualityMap);
+        return node;
+    }
+
+    private JsonNode getItemsFromSchema(JsonNode schema) {
+        TF2Schema tf2Schema = new TF2Schema(schema);
+        List<TF2SchemaItem> qualityMap = tf2Schema.getItemsWithNameAndDefIndexAndImage();
+        JsonNode node = jsonMapper.valueToTree(qualityMap);
+        return node;
     }
 
     private void cloneRepo() throws InvalidRemoteException, TransportException, GitAPIException, IOException {
@@ -139,7 +170,9 @@ public class SchemaDao {
     }
 
     private void cacheInvalidate() {
-        cache.invalidate(CACHE_KEY);
+        cache.invalidate(CACHE_SCHEMA_KEY);
+        cache.invalidate(CACHE_ITEMS_KEY);
+        cache.invalidate(CACHE_QUALITIES_KEY);
     }
 
     private void commitAndPush() throws CannotCommitException {
@@ -178,13 +211,21 @@ public class SchemaDao {
         this.credentialsProvider = new UsernamePasswordCredentialsProvider(credentials.getToken(), "");
         this.loader = new CacheLoader<String, JsonNode>() {
             public JsonNode load(String key) throws RuntimeException, JsonProcessingException, IOException {
-                return loadSchemaFromDisk();
+                return loadDataFromDisk(key);
             }
         };
         this.cache = CacheBuilder.newBuilder().build(loader);
         if (!doesLocalRepoExist()) {
             cloneRepo();
         }
+    }
+
+    public JsonNode getItems() throws ExecutionException {
+        return cache.get(CACHE_ITEMS_KEY);
+    }
+
+    public JsonNode getQualities() throws ExecutionException {
+        return cache.get(CACHE_QUALITIES_KEY);
     }
 
 }

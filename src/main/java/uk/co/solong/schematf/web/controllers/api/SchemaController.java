@@ -24,6 +24,16 @@ public class SchemaController {
     public @ResponseBody JsonNode getSchema() throws ExecutionException {
         return schemaDao.getLatestSchema();
     }
+    
+    @RequestMapping("getAllItems")
+    public @ResponseBody JsonNode getItems() throws ExecutionException {
+        return schemaDao.getItems();
+    }
+    
+    @RequestMapping("getAllQualities")
+    public @ResponseBody JsonNode getQualities() throws ExecutionException {
+        return schemaDao.getQualities();
+    }
 
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(ExecutionException.class)
