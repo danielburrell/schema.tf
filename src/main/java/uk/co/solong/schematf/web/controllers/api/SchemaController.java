@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import uk.co.solong.schematf.core.SchemaDao;
+import uk.co.solong.schematf.core.persistence.SchemaDao;
 import uk.co.solong.schematf.web.model.ErrorCodes;
 import uk.co.solong.schematf.web.model.ErrorResult;
 
@@ -27,12 +27,14 @@ public class SchemaController {
     
     @RequestMapping("getAllItems")
     public @ResponseBody JsonNode getItems() throws ExecutionException {
-        return schemaDao.getItems();
+        //return schemaDao.getItems();
+        return null;
     }
     
     @RequestMapping("getAllQualities")
     public @ResponseBody JsonNode getQualities() throws ExecutionException {
-        return schemaDao.getQualities();
+        //return schemaDao.getQualities();
+        return null;
     }
 
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)

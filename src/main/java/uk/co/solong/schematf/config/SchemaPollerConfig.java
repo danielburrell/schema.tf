@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import uk.co.solong.schematf.core.NotificationDao;
-import uk.co.solong.schematf.core.SchemaDao;
 import uk.co.solong.schematf.core.SchemaPoller;
+import uk.co.solong.schematf.core.notification.NotificationDao;
+import uk.co.solong.schematf.core.persistence.SchemaDao;
 import uk.co.solong.steam4j.tf2.TF2Template;
 
 @Configuration

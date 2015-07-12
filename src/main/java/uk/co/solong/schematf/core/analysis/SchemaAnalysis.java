@@ -1,7 +1,9 @@
-package uk.co.solong.schematf.core;
+package uk.co.solong.schematf.core.analysis;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.joda.time.DateTime;
 
 public class SchemaAnalysis {
     private int newItems;
@@ -45,21 +47,21 @@ public class SchemaAnalysis {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (newItems > 0) {
-            sb.append(newItems).append(" new items").append("\n");
+            sb.append(newItems).append(" new items").append(", ");
         }
         if (newQualities > 0) {
-            sb.append(newQualities).append(" new qualities").append("\n");
+            sb.append(newQualities).append(" new qualities").append(", ");
         }
         if (newCrates.size() > 0) {
-            sb.append("Crate# ").append(newCrates.toString()).append("\n");
+            sb.append("Crate# ").append(newCrates.toString()).append(", ");
         }
         if (modifiedItems > 0) {
-            sb.append(modifiedItems).append(" modified Items").append("\n");
+            sb.append(modifiedItems).append(" modified Items");
         }
         
         String status = sb.toString();
         if ("".equals(status)) {
-            return "Schema changed silently";
+            return "Schema changed silently "+new DateTime().getMillis();
         } else {
             return status;
         }

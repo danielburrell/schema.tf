@@ -1,11 +1,7 @@
 #Properties file template. Copy and paste this file to generate new environments.
 steam.apikey=
-git.api.token=
-git.repository.owner=
-git.repository.name=
-remoteUrl=https://${git.api.token}@github.com/${git.repository.owner}/${git.repository.name}.git
-git.localdirectory=
 twitter.consumerKey=
 twitter.consumerSecret=
 twitter.accessToken=
 twitter.accessTokenSecret=
+dropbox.token=

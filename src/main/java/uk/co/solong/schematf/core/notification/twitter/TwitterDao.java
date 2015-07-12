@@ -1,8 +1,11 @@
-package uk.co.solong.schematf.core;
+package uk.co.solong.schematf.core.notification.twitter;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.social.twitter.api.Twitter;
+
+import uk.co.solong.schematf.core.analysis.SchemaAnalysis;
+import uk.co.solong.schematf.core.notification.NotificationDao;
 
 public class TwitterDao implements NotificationDao {
 
@@ -12,7 +15,9 @@ public class TwitterDao implements NotificationDao {
     @Override
     public void notifySchemaChange(SchemaAnalysis schemaAnalysis) {
         try {
-            twitter.timelineOperations().updateStatus("Schema changed:\n"+schemaAnalysis.toString());
+            String rawTweet = schemaAnalysis.toString();
+            String tweet = rawTweet.substring(0, Math.min(140, rawTweet.length()));
+            twitter.timelineOperations().updateStatus(tweet);
         } catch (Throwable e) {
             logger.error("Could not update twitter status.", e);
         }

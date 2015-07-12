@@ -7,6 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import uk.co.solong.schematf.core.analysis.SchemaAnalysis;
+import uk.co.solong.schematf.core.analysis.SchemaChangeAnalyser;
+import uk.co.solong.schematf.core.notification.NotificationDao;
+import uk.co.solong.schematf.core.persistence.SchemaDao;
 import uk.co.solong.steam4j.tf2.TF2Template;
 import uk.co.solong.steam4j.tf2.data.schema.TF2Schema;
 
@@ -30,21 +34,14 @@ public class SchemaPoller {
     public void reconcileSchemas() throws ExecutionException {
         JsonNode valveSchema = tf2Template.getSchema().getRawData();
         JsonNode githubSchema = schemaDao.getLatestSchema();
-        if (!valveSchema.equals(githubSchema)) {
+        if (!valveSchema.equals(githubSchema) || true) {
             logger.info("Schema change detected");
             try {
                 schemaDao.persist(valveSchema);
                 SchemaAnalysis schemaAnalysis = schemaChangeAnalyser.schemaChangeAnalyser(new TF2Schema(githubSchema), new TF2Schema(valveSchema));
                 notificationDao.notifySchemaChange(schemaAnalysis);
-            } catch (CannotCommitException e) {
-                logger.info("Another process committed. Discarding and resyncing");
-                try {
-                    schemaDao.discardAndResync();
-                } catch (Throwable discardAndResyncError) {
-                    logger.error("Some error has occured attempting to commit.", discardAndResyncError);
-                }
             } catch (Throwable commitAndSyncError) {
-                logger.error("Some error has occured attempting to commit.", commitAndSyncError);
+                logger.error("Some error has occured attempting to persist/notify new changes.", commitAndSyncError);
             }
         }
     }

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.social.twitter.api.Twitter;
 
-import uk.co.solong.schematf.core.TwitterDao;
+import uk.co.solong.schematf.core.notification.twitter.TwitterDao;
 
 @Configuration
 public class TwitterDaoConfig {
