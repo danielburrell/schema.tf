@@ -34,7 +34,7 @@ public class SchemaPoller {
     public void reconcileSchemas() throws ExecutionException {
         JsonNode valveSchema = tf2Template.getSchema().getRawData();
         JsonNode githubSchema = schemaDao.getLatestSchema();
-        if (!valveSchema.equals(githubSchema) || true) {
+        if (!valveSchema.equals(githubSchema)) {
             logger.info("Schema change detected");
             try {
                 schemaDao.persist(valveSchema);
