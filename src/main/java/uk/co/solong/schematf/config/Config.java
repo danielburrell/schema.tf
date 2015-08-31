@@ -18,7 +18,7 @@ import uk.co.solong.application.config.PropertyPlaceholderConfig;
 @Import({ PropertyPlaceholderConfig.class, RepositoryRestMvcAutoConfiguration.class, HttpMessageConvertersAutoConfiguration.class,
         SpringDataWebAutoConfiguration.class, WebMvcAutoConfiguration.class, EmbeddedServletContainerAutoConfiguration.class,
         DispatcherServletAutoConfiguration.class, ServerPropertiesAutoConfiguration.class, SchemaControllerConfig.class, DropboxSchemaDaoConfig.class,
-        SchemaPollerConfig.class, TF2TemplateConfig.class, TwitterConfig.class, TwitterDaoConfig.class, DropboxDaoConfig.class })
+        SchemaPollerConfig.class, TF2TemplateConfig.class, TwitterConfig.class, TwitterDaoConfig.class, DropboxDaoConfig.class, WebConfig.class })
 public class Config {
 
 }
