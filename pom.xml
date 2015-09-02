@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.co.solong</groupId>
     <artifactId>schematf</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.2</version>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -74,6 +74,34 @@
             <artifactId>spring-social-twitter</artifactId>
         </dependency>
     </dependencies>
+    <profiles>
+        <profile>
+            <id>release</id>
+            <build>
+                <!-- include sources -->
+                <plugins>
+                    <plugin>
+                        <groupId>uk.co.solong</groupId>
+                        <artifactId>gemfury-maven-plugin</artifactId>
+                        <version>0.0.2</version>
+                        <executions>
+                            <execution>
+                                <id>execution1</id>
+                                <phase>deploy</phase>
+                                <configuration>
+                                    <gemfuryUrl>https://${secrettoken}@repo.fury.io/danielburrell/</gemfuryUrl>
+                                    <debFile>${project.build.directory}/schematf.deb</debFile>
+                                </configuration>
+                                <goals>
+                                    <goal>gemfury</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
@@ -210,24 +238,6 @@
                     <goals>deploy</goals>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>uk.co.solong</groupId>
-                <artifactId>gemfury-maven-plugin</artifactId>
-                <version>0.0.2</version>
-                <executions>
-                    <execution>
-                        <id>execution1</id>
-                        <phase>deploy</phase>
-                        <configuration>
-                            <gemfuryUrl>https://${secrettoken}@repo.fury.io/danielburrell/</gemfuryUrl>
-                            <debFile>${project.build.directory}/schematf.deb</debFile>
-                        </configuration>
-                        <goals>
-                            <goal>gemfury</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <!-- change this next plugin at some point to not skip, but instead publish to nexus -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -250,6 +260,6 @@
         <url>https://github.com/danielburrell/schema.tf</url>
         <connection>scm:git:git://github.com/danielburrell/schema.tf.git</connection>
         <developerConnection>scm:git:git@github.com:danielburrell/schema.tf.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>schematf-0.0.2</tag>
     </scm>
 </project>
