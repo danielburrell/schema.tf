@@ -249,7 +249,7 @@
             </plugin>
         </plugins>
     </build>
-    <name>Schema.TF</name>
+    <name>schematf</name>
     <url>www.solong.co.uk/schematf</url>
     <description>A service for tracking, displaying and sending notifications for the Team Fortress 2 item schema.</description>
     <organization>
