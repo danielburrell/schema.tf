@@ -1,4 +1,6 @@
 # Auto detect text files and perform LF normalization
+control text eol=LF
+schematf.conf text eol=LF
 * text eol=LF
 
 # Custom for Visual Studio
