@@ -3,6 +3,6 @@ Version: [[version]]
 Section: misc
 Priority: low
 Architecture: all
-Depends:
+Depends: 
 Description: [[description]]
 Maintainer: daniel@solong.co.uk
