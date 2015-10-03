@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +46,8 @@ public class SchemaController {
 
 
     @RequestMapping("getAllItemsJsonP")
-    public @ResponseBody JSONPObject getItems(@RequestParam("c") String callBack) throws ExecutionException {
+    public @ResponseBody JSONPObject getItems(@RequestParam("c") String callBack, HttpServletResponse response) throws ExecutionException {
+        response.setContentType("text/javascript; charset=UTF-8");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("data", schemaDao.getItems());
         return new JSONPObject(callBack, map);
