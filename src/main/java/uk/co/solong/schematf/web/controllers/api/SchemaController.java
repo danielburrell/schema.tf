@@ -33,24 +33,25 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 @RestController
 @RequestMapping("/api")
 public class SchemaController {
-    private static final Logger logger = LoggerFactory.getLogger(SchemaController.class);
+    private static final Logger logger = LoggerFactory.getLogger(SchemaController.class); 
     private final SchemaDao schemaDao;
     private final HashCodeGenerator hashCodeGenerator = new HashCodeGenerator();
-
+    
     @RequestMapping("getRawSchema")
     public @ResponseBody JsonNode getSchema() throws ExecutionException {
         JsonNode latestSchema = schemaDao.getLatestSchema();
         return latestSchema;
     }
 
-    @RequestMapping("getAllItems")
+
+    @RequestMapping("getAllItemsJsonP")
     public @ResponseBody JSONPObject getItems(@RequestParam("c") String callBack) throws ExecutionException {
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("data", schemaDao.getItems());
         return new JSONPObject(callBack, map);
     }
 
-    @RequestMapping("getAllItemsJsonP")
+    @RequestMapping("getAllItems")
     public @ResponseBody JsonNode getItems() throws ExecutionException {
         return schemaDao.getItems();
     }
@@ -59,9 +60,9 @@ public class SchemaController {
     public @ResponseBody JsonNode getQualities() throws ExecutionException {
         return schemaDao.getQualities();
     }
-
-    @RequestMapping(value = "putSchema", method = RequestMethod.POST)
-    public @ResponseBody JsonNode putSchema(@RequestParam long dateObserved, HttpServletRequest request) throws ExecutionException, IOException {
+    
+    @RequestMapping(value="putSchema", method=RequestMethod.POST)
+    public @ResponseBody JsonNode putSchema(@RequestParam long dateObserved, HttpServletRequest  request) throws ExecutionException, IOException {
         InputStream is = request.getInputStream();
         ObjectMapper m = new ObjectMapper();
         JsonNode schema = m.readTree(is);
@@ -89,7 +90,7 @@ public class SchemaController {
         errorResult.setReason("Schema lookup failed");
         return errorResult;
     }
-
+    
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(Throwable.class)
     public @ResponseBody ErrorResult generalFailure() {
