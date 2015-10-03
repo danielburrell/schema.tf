@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.el.parser.BooleanNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -47,10 +48,15 @@ public class SchemaController {
 
     @RequestMapping("getAllItemsJsonP")
     public @ResponseBody JSONPObject getItems(@RequestParam("c") String callBack, HttpServletResponse response) throws ExecutionException {
+        try {
         response.setContentType("text/javascript; charset=UTF-8");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("data", schemaDao.getItems());
         return new JSONPObject(callBack, map);
+        } catch (Throwable e) {
+            logger.error("fail",e);
+        }
+        return new JSONPObject(callBack, new BooleanNode(0));
     }
 
     @RequestMapping("getAllItems")
