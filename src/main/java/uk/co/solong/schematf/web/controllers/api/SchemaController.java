@@ -48,15 +48,10 @@ public class SchemaController {
 
     @RequestMapping("getAllItemsJsonP")
     public @ResponseBody JSONPObject getItems(@RequestParam("c") String callBack, HttpServletResponse response) throws ExecutionException {
-        try {
         response.setContentType("text/javascript; charset=UTF-8");
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("data", schemaDao.getItems());
         return new JSONPObject(callBack, map);
-        } catch (Throwable e) {
-            logger.error("fail",e);
-        }
-        return new JSONPObject(callBack, new BooleanNode(0));
     }
 
     @RequestMapping("getAllItems")
@@ -64,8 +59,16 @@ public class SchemaController {
         return schemaDao.getItems();
     }
 
-    @RequestMapping("getAllQualities")
-    public @ResponseBody JsonNode getQualities() throws ExecutionException {
+    @RequestMapping("getAllQualitiesJsonP")
+    public @ResponseBody JSONPObject getAllQualitiesJsonP(@RequestParam("c") String callBack, HttpServletResponse response) throws ExecutionException {
+        response.setContentType("text/javascript; charset=UTF-8");
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("data", schemaDao.getQualities());
+        return new JSONPObject(callBack, map);
+    }
+    
+    @RequestMapping("getRawQualities")
+    public @ResponseBody JsonNode getRawQualities() throws ExecutionException {
         return schemaDao.getQualities();
     }
     

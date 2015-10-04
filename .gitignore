@@ -16,3 +16,5 @@ hs_err_pid*
 .settings
 default.properties
 src/main/resources/prod.properties
+release.properties
+pom.xml.releaseBackup
