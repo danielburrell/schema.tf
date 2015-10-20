@@ -51,7 +51,7 @@ public class SchemaController {
     public @ResponseBody JSONPObject getItems(@RequestParam("c") String callBack, HttpServletResponse response) throws ExecutionException {
         response.setContentType("text/javascript; charset=UTF-8");
         Map<String, Object> map = new HashMap<String, Object>();
-        JsonNode items = schemaDao.getItems();
+        JsonNode items = schemaDao.getItems().deepCopy();
         for (JsonNode item : items) {
             ObjectNode n = (ObjectNode) item;
             n.put("image_url", n.get("image_url").asText().replaceFirst("http://media.steampowered.com/", "https://steamcdn-a.akamaihd.net/"));
