@@ -29,6 +29,7 @@ import uk.co.solong.schematf.web.model.ErrorResult;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 
@@ -50,7 +51,12 @@ public class SchemaController {
     public @ResponseBody JSONPObject getItems(@RequestParam("c") String callBack, HttpServletResponse response) throws ExecutionException {
         response.setContentType("text/javascript; charset=UTF-8");
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("data", schemaDao.getItems());
+        JsonNode items = schemaDao.getItems();
+        for (JsonNode item : items) {
+            ObjectNode n = (ObjectNode) item;
+            n.put("image_url", n.get("image_url").asText().replaceFirst("http://media.steampowered.com/", "https://steamcdn-a.akamaihd.net/"));
+        }
+        map.put("data", items);
         return new JSONPObject(callBack, map);
     }
 
