@@ -39,6 +39,7 @@ public class SchemaController {
     private static final Logger logger = LoggerFactory.getLogger(SchemaController.class); 
     private final SchemaDao schemaDao;
     private final HashCodeGenerator hashCodeGenerator = new HashCodeGenerator();
+    private Map<Integer, String> colorMap;
     
     @RequestMapping("getRawSchema")
     public @ResponseBody JsonNode getSchema() throws ExecutionException {
@@ -69,7 +70,12 @@ public class SchemaController {
     public @ResponseBody JSONPObject getAllQualitiesJsonP(@RequestParam("c") String callBack, HttpServletResponse response) throws ExecutionException {
         response.setContentType("text/javascript; charset=UTF-8");
         Map<String, Object> map = new HashMap<String, Object>();
-        map.put("data", schemaDao.getQualities());
+        JsonNode qualities = schemaDao.getQualities().deepCopy();
+        for (JsonNode quality : qualities) {
+            ObjectNode n = (ObjectNode) quality;
+            n.put("color", colorMap.get(n.get("id").asInt()));
+        }
+        map.put("data", qualities);
         return new JSONPObject(callBack, map);
     }
     
@@ -119,5 +125,22 @@ public class SchemaController {
 
     public SchemaController(SchemaDao schemaDao) {
         this.schemaDao = schemaDao;
+        this.colorMap = new HashMap<>();
+        this.colorMap.put(0, "B2B2B2"); //normal
+        this.colorMap.put(1, "4D7455"); //genuine
+        this.colorMap.put(2, "000000"); //rarity2
+        this.colorMap.put(3, "476291"); //vintage
+        this.colorMap.put(4, "000000"); //rarity3
+        this.colorMap.put(5, "8650AC"); //unusual
+        this.colorMap.put(6, "FFD700"); //unique
+        this.colorMap.put(7, "70B04A"); //community
+        this.colorMap.put(8, "A50F79"); //valve
+        this.colorMap.put(9, "70B04A"); //selfmade
+        this.colorMap.put(10, "000000"); //customized
+        this.colorMap.put(11, "CF6A32"); //strange
+        this.colorMap.put(12, "000000"); //completed
+        this.colorMap.put(13, "38F3AB"); //haunted
+        this.colorMap.put(14, "AA0000"); //collectors
+        this.colorMap.put(15, "FAFAFA"); //decorated
     }
 }
