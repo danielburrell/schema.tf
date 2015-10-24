@@ -1,5 +1,6 @@
 package uk.co.solong.schematf.web.controllers.api;
 
+import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,22 +23,28 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
 @RequestMapping("/api")
-public class SchemaController {
-    private static final Logger logger = LoggerFactory.getLogger(SchemaController.class);
+public class QualitiesController {
+    private static final Logger logger = LoggerFactory.getLogger(QualitiesController.class);
     private final SchemaDao schemaDao;
 
-    /**
-     * Get the raw unaltered schema as provided by valve.
-     * 
-     * @return
-     * @throws ExecutionException
-     */
-    @RequestMapping("getRawSchema")
-    public @ResponseBody JsonNode getSchema(HttpServletResponse response) throws ExecutionException {
-        response.addHeader("Access-Control-Allow-Origin", "*");
-        JsonNode latestSchema = (JsonNode) schemaDao.getFromDataCache(Keys.SCHEMA_KEY);
-        return latestSchema;
+    public QualitiesController(SchemaDao schemaDao) {
+        this.schemaDao = schemaDao;
     }
+    
+    @RequestMapping("getAllQualitiesSimple")
+    public @ResponseBody JsonNode getAllQualitiesSimple(HttpServletResponse response) throws ExecutionException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        return schemaDao.getFromDataCache(Keys.QUALITY_SIMPLE_KEY);
+    }
+    
+    
+    
+    @RequestMapping("getAllQualitiesRaw")
+    public @ResponseBody JsonNode getAllQualitiesRaw(HttpServletResponse response) throws ExecutionException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        return schemaDao.getFromDataCache(Keys.QUALITY_RAW_KEY);
+    }
+
 
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(ExecutionException.class)
@@ -47,7 +54,7 @@ public class SchemaController {
         errorResult.setReason("Schema lookup failed");
         return errorResult;
     }
-
+    
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(Throwable.class)
     public @ResponseBody ErrorResult generalFailure() {
@@ -55,9 +62,5 @@ public class SchemaController {
         errorResult.setId(ErrorCodes.SCHEMA_LOOKUP_FAILED.getId());
         errorResult.setReason("Schema lookup failed");
         return errorResult;
-    }
-
-    public SchemaController(SchemaDao schemaDao) {
-        this.schemaDao = schemaDao;
     }
 }

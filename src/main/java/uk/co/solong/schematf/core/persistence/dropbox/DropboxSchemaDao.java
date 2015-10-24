@@ -13,10 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import uk.co.solong.schematf.core.HashCodeGenerator;
+import uk.co.solong.schematf.core.cachekeys.Keys;
 import uk.co.solong.schematf.core.persistence.SchemaDao;
-import uk.co.solong.schematf.core.strategy.ItemStrategy;
-import uk.co.solong.schematf.core.strategy.QualityStrategy;
-import uk.co.solong.schematf.core.strategy.Strategy;
+import uk.co.solong.schematf.core.strategy.DerivativeDataLoader;
 import uk.co.solong.schematf.model.MetaData;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -31,12 +30,9 @@ public class DropboxSchemaDao implements SchemaDao {
 
     private final DropboxDao dropboxDao;
     private final ObjectMapper m = new ObjectMapper();
-    private CacheLoader<Strategy, JsonNode> loader;
-    private LoadingCache<Strategy, JsonNode> cache;
+    private CacheLoader<DerivativeDataLoader, JsonNode> loader;
+    private LoadingCache<DerivativeDataLoader, JsonNode> cache;
 
-    private static final Strategy ITEM_KEY = new ItemStrategy();
-    private static final Strategy QUALITY_KEY = new QualityStrategy();
-    private static final Strategy SCHEMA_KEY = new SchemaStrategy();
     private final HashCodeGenerator hashCodeGenerator = new HashCodeGenerator();
     private static final Logger logger = LoggerFactory.getLogger(DropboxSchemaDao.class);
 
@@ -81,10 +77,10 @@ public class DropboxSchemaDao implements SchemaDao {
         return hashCode + ".schema";
     }
 
-    @Override
+    @Override @Deprecated
     public JsonNode getLatestSchema() {
         try {
-            return cache.get(SCHEMA_KEY);
+            return cache.get(Keys.SCHEMA_KEY);
         } catch (ExecutionException e) {
             throw new RuntimeException(e);
         }
@@ -92,12 +88,14 @@ public class DropboxSchemaDao implements SchemaDao {
 
     public DropboxSchemaDao(DropboxDao dropboxDao) {
         this.dropboxDao = dropboxDao;
-        this.loader = new CacheLoader<Strategy, JsonNode>() {
-            public JsonNode load(Strategy key) throws RuntimeException, JsonProcessingException, IOException, ExecutionException {
-                if (key==SCHEMA_KEY) {
+        this.loader = new CacheLoader<DerivativeDataLoader, JsonNode>() {
+            public JsonNode load(DerivativeDataLoader key) throws RuntimeException, JsonProcessingException, IOException, ExecutionException {
+                //if the request is the schema key then execute a load from dropbox.
+                if (key==Keys.SCHEMA_KEY) {
                     return loadDataFromDropbox();
                 } else {
-                    return key.execute(cache.get(SCHEMA_KEY));
+                    //otherwise the data to be loaded will be derived via a strategy applied to the schema (pulled from the cache).
+                    return key.deriveData(cache.get(Keys.SCHEMA_KEY));
                 }
             }
         };
@@ -131,18 +129,23 @@ public class DropboxSchemaDao implements SchemaDao {
     }
 
     @Override
+    public JsonNode getFromDataCache(DerivativeDataLoader<JsonNode> ITEM_KEY) throws ExecutionException {
+        return cache.get(ITEM_KEY);
+    }
+    
+    @Override @Deprecated
     public JsonNode getItems() {
         try {
-            return cache.get(ITEM_KEY);
+            return cache.get(Keys.ITEM_RAW_KEY);
         } catch (ExecutionException e) {
             return new POJONode(null);
         }
     }
 
-    @Override
+    @Override @Deprecated
     public JsonNode getQualities() {
         try {
-            return cache.get(QUALITY_KEY);
+            return cache.get(Keys.QUALITY_KEY);
         } catch (ExecutionException e) {
             return new POJONode(null);
         }

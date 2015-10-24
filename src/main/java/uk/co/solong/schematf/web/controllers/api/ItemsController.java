@@ -22,23 +22,35 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 @RestController
 @RequestMapping("/api")
-public class SchemaController {
-    private static final Logger logger = LoggerFactory.getLogger(SchemaController.class);
+public class ItemsController {
+    private static final Logger logger = LoggerFactory.getLogger(ItemsController.class);
     private final SchemaDao schemaDao;
 
+    public ItemsController(SchemaDao schemaDao) {
+        this.schemaDao = schemaDao;
+    }
+    
+    @RequestMapping("getAllItemsRaw")
+    public @ResponseBody JsonNode getAllItemsRaw(HttpServletResponse response) throws ExecutionException {
+        response.addHeader("Access-Control-Allow-Origin", "*");
+        return schemaDao.getFromDataCache(Keys.ITEM_CDN_KEY);
+    }
+    
     /**
-     * Get the raw unaltered schema as provided by valve.
+     * Get all items in the schema with the cdn substituted.
      * 
+     * @param callBack
+     * @param response
      * @return
      * @throws ExecutionException
      */
-    @RequestMapping("getRawSchema")
-    public @ResponseBody JsonNode getSchema(HttpServletResponse response) throws ExecutionException {
+    @RequestMapping("getAllItemsCdn")
+    public @ResponseBody JsonNode getAllItemsCdn(HttpServletResponse response) throws ExecutionException {
         response.addHeader("Access-Control-Allow-Origin", "*");
-        JsonNode latestSchema = (JsonNode) schemaDao.getFromDataCache(Keys.SCHEMA_KEY);
-        return latestSchema;
+        response.setContentType("text/javascript; charset=UTF-8");
+        return schemaDao.getFromDataCache(Keys.ITEM_RAW_KEY);
     }
-
+    
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(ExecutionException.class)
     public @ResponseBody ErrorResult schemaUnavailable() {
@@ -47,7 +59,7 @@ public class SchemaController {
         errorResult.setReason("Schema lookup failed");
         return errorResult;
     }
-
+    
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(Throwable.class)
     public @ResponseBody ErrorResult generalFailure() {
@@ -57,7 +69,4 @@ public class SchemaController {
         return errorResult;
     }
 
-    public SchemaController(SchemaDao schemaDao) {
-        this.schemaDao = schemaDao;
-    }
 }

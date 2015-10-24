@@ -4,10 +4,10 @@ import uk.co.solong.steam4j.tf2.data.schema.TF2Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public class ItemStrategy implements Strategy {
+public class ItemRawStrategy implements DerivativeDataLoader<JsonNode> {
 
     @Override
-    public JsonNode execute(JsonNode schemaJson) {
+    public JsonNode deriveData(JsonNode schemaJson) {
         TF2Schema schema = new TF2Schema(schemaJson);
         return schema.getRawItems();
     }

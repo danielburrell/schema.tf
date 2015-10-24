@@ -2,7 +2,7 @@ package uk.co.solong.schematf.core.strategy;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-public interface Strategy {
+public interface DerivativeDataLoader<T> {
 
-    public JsonNode execute(JsonNode schema);
+    public T deriveData(JsonNode schema);
 }
