@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import uk.co.solong.schematf.core.analysis.SchemaAnalysis;
 import uk.co.solong.schematf.core.analysis.SchemaChangeAnalyser;
+import uk.co.solong.schematf.core.cachekeys.Keys;
 import uk.co.solong.schematf.core.notification.NotificationDao;
 import uk.co.solong.schematf.core.persistence.SchemaDao;
 import uk.co.solong.steam4j.tf2.TF2Template;
@@ -33,7 +34,7 @@ public class SchemaPoller {
     @Scheduled(fixedDelay = 60000)
     public void reconcileSchemas() throws ExecutionException {
         JsonNode valveSchema = tf2Template.getSchema().getRawData();
-        JsonNode githubSchema = schemaDao.getLatestSchema();
+        JsonNode githubSchema = schemaDao.getFromDataCache(Keys.SCHEMA_KEY);
         if (!valveSchema.equals(githubSchema)) {
             logger.info("Schema change detected");
             try {

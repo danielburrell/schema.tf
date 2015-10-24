@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.Test;
 
 import uk.co.solong.schematf.core.persistence.SchemaDao;
+import uk.co.solong.schematf.core.strategy.DerivativeDataLoader;
 import uk.co.solong.schematf.model.MetaData;
+import uk.co.solong.schematf.web.controllers.api.QualitiesController;
 import uk.co.solong.schematf.web.controllers.api.SchemaController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -39,8 +41,16 @@ public class TestQualityInsertion {
                 
             }
             
+            
+            
             @Override
-            public JsonNode getQualities() {
+            public boolean exists(String hashCode) {
+                // TODO Auto-generated method stub
+                return false;
+            }
+
+            @Override
+            public JsonNode getFromDataCache(DerivativeDataLoader<JsonNode> ITEM_KEY) throws ExecutionException {
                 ObjectMapper o = new ObjectMapper();
                 try {
                     return o.readTree("{\"0\":{\"id\":0,\"name\":\"Normal\"},\"1\":{\"id\":1,\"name\":\"Genuine\"},\"2\":{\"id\":2,\"name\":\"rarity2\"},\"3\":{\"id\":3,\"name\":\"Vintage\"},\"4\":{\"id\":4,\"name\":\"rarity3\"},\"5\":{\"id\":5,\"name\":\"Unusual\"},\"6\":{\"id\":6,\"name\":\"Unique\"},\"7\":{\"id\":7,\"name\":\"Community\"},\"8\":{\"id\":8,\"name\":\"Valve\"},\"9\":{\"id\":9,\"name\":\"Self-Made\"},\"10\":{\"id\":10,\"name\":\"Customized\"},\"11\":{\"id\":11,\"name\":\"Strange\"},\"12\":{\"id\":12,\"name\":\"Completed\"},\"13\":{\"id\":13,\"name\":\"Haunted\"},\"14\":{\"id\":14,\"name\":\"Collector's\"},\"15\":{\"id\":15,\"name\":\"Decorated Weapon\"}}");
@@ -53,27 +63,9 @@ public class TestQualityInsertion {
                 }
                 return null;
             }
-            
-            @Override
-            public JsonNode getLatestSchema() {
-                // TODO Auto-generated method stub
-                return null;
-            }
-            
-            @Override
-            public JsonNode getItems() {
-                // TODO Auto-generated method stub
-                return null;
-            }
-            
-            @Override
-            public boolean exists(String hashCode) {
-                // TODO Auto-generated method stub
-                return false;
-            }
         };
-        SchemaController t = new SchemaController(schemaDao );
-        JSONPObject p = t.getAllQualitiesJsonP("JSON_CALLBACK", new HttpServletResponse() {
+        QualitiesController t = new QualitiesController(schemaDao );
+        JsonNode p = t.getAllQualitiesSimple(new HttpServletResponse() {
             
             @Override
             public void setLocale(Locale loc) {
