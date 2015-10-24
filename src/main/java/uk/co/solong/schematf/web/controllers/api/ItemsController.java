@@ -33,7 +33,7 @@ public class ItemsController {
     @RequestMapping("getAllItemsRaw")
     public @ResponseBody JsonNode getAllItemsRaw(HttpServletResponse response) throws ExecutionException {
         response.addHeader("Access-Control-Allow-Origin", "*");
-        return schemaDao.getFromDataCache(Keys.ITEM_CDN_KEY);
+        return schemaDao.getFromDataCache(Keys.ITEM_RAW_KEY);
     }
     
     /**
@@ -48,7 +48,7 @@ public class ItemsController {
     public @ResponseBody JsonNode getAllItemsCdn(HttpServletResponse response) throws ExecutionException {
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.setContentType("text/javascript; charset=UTF-8");
-        return schemaDao.getFromDataCache(Keys.ITEM_RAW_KEY);
+        return schemaDao.getFromDataCache(Keys.ITEM_CDN_KEY);
     }
     
     @ResponseStatus(value = HttpStatus.SERVICE_UNAVAILABLE)
