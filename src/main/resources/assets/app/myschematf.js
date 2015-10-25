@@ -1,5 +1,5 @@
 //define a new module called MyHatF2, then define a controller on that module
-angular.module('myschematf', [ 'home' ]).controller('MySchemTFCtrl', [ '$scope',
+angular.module('myschematf', [ 'home', 'apiguide' ]).controller('MySchemTFCtrl', [ '$scope',
 		function($scope) {
 			
 		}]).config(function($locationProvider) {

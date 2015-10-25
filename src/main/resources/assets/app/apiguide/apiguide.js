@@ -1,11 +1,11 @@
 //define a new module called MyHatF2, then define a controller on that module
-angular.module('home', [ 'ngRoute','apiservice', 'ngCookies','navigation' ]).config(function($routeProvider) {
-	$routeProvider.when('/', {
-		templateUrl : '/assets/app/home/home.html.tpl',
-		controller : 'HomeCtrl',
+angular.module('apiguide', [ 'ngRoute','apiservice', 'ngCookies','navigation' ]).config(function($routeProvider) {
+	$routeProvider.when('/apiguide', {
+		templateUrl : '/assets/app/apiguide/apiguide.html.tpl',
+		controller : 'ApiGuideCtrl',
 	});
 }).controller(
-		'HomeCtrl', [ '$scope', '$window', '$cookies', '$location', 'hatf2api',
+		'ApiGuideCtrl', [ '$scope', '$window', '$cookies', '$location', 'hatf2api',
 		function($scope, $window, $cookies, $location, hatf2api) {
 			
 			

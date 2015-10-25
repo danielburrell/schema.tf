@@ -12,7 +12,7 @@ angular.module('navigation', ['apiservice']).directive('navbar', function() {
     };
 }).controller('NavigationController',
 		[ '$scope', '$location', 'hatf2api', function($scope, $location, hatf2api) {
-			$scope.pages = [{"url":"/search", "name":"Search" }, {"url":"/notifications", "name":"Notifications" }];
+			$scope.pages = [{"url":"/apiguide", "name":"API" }, {"url":"/history", "name":"Schema History" }, {"url":"/current", "name":"Current Schema" }, {"url":"/notifications", "name":"Notifications" }];
 			
 			$scope.logout = function() {
 				var xhr = new XMLHttpRequest();
