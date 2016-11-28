@@ -161,9 +161,9 @@
                                     <mapper>
                                         <type>perm</type>
                                         <prefix>/opt/solong/${project.artifactId}/${project.version}/bin</prefix>
-                                        <user>root</user>
-                                        <group>root</group>
-                                        <filemode>755</filemode>
+                                        <user>schematf</user>
+                                        <group>schematf</group>
+                                        <filemode>700</filemode>
                                     </mapper>
                                 </data>
                                 <data>
@@ -173,9 +173,9 @@
                                     <mapper>
                                         <type>perm</type>
                                         <prefix>/opt/solong/${project.artifactId}/${project.version}</prefix>
-                                        <user>root</user>
-                                        <group>root</group>
-                                        <filemode>644</filemode>
+                                        <user>schematf</user>
+                                        <group>schematf</group>
+                                        <filemode>600</filemode>
                                     </mapper>
                                 </data>
                                 <data>
@@ -200,11 +200,11 @@
                                     <symlink>true</symlink>
                                 </data>
                                 <data>
-                                    <src>src/deb/upstart/${project.artifactId}.conf</src>
+                                    <src>src/deb/systemd/${project.artifactId}.service</src>
                                     <type>file</type>
                                     <mapper>
                                         <type>perm</type>
-                                        <prefix>/etc/init</prefix>
+                                        <prefix>/etc/systemd/system/</prefix>
                                         <filemode>644</filemode>
                                         <user>root</user>
                                         <group>root</group>
@@ -227,7 +227,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>2.5</version>
+                <version>2.5.3</version>
                 <configuration>
                     <checkModificationExcludes>
                         <checkModificationExclude>pom.xml</checkModificationExclude>

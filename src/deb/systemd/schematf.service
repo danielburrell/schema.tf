@@ -1,0 +1,11 @@
+[Unit]
+Description=SchemaTF webservice
+After=network.target
+
+[Service]
+User=schematf
+Type=simple
+ExecStart=/opt/solong/schematf/current/bin/start
+
+[Install]
+WantedBy=multi-user.target
