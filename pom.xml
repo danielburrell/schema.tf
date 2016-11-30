@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.co.solong</groupId>
     <artifactId>schematf</artifactId>
-    <version>0.0.26-SNAPSHOT</version>
+    <version>0.0.26</version>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -83,13 +83,14 @@
                     <plugin>
                         <groupId>uk.co.solong</groupId>
                         <artifactId>gemfury-maven-plugin</artifactId>
-                        <version>0.0.8</version>
+                        <version>0.0.9</version>
                         <executions>
                             <execution>
                                 <id>execution1</id>
                                 <phase>deploy</phase>
                                 <configuration>
-                                    <gemfuryUrl>https://push.fury.io/${secrettoken}/</gemfuryUrl>
+                                    <token>${secrettoken}</token>
+                                    <gemfuryUrl>https://push.fury.io/token/</gemfuryUrl>
                                     <debFile>${project.build.directory}/schematf.deb</debFile>
                                 </configuration>
                                 <goals>
@@ -260,6 +261,6 @@
         <url>https://github.com/danielburrell/schema.tf</url>
         <connection>scm:git:git://github.com/danielburrell/schema.tf.git</connection>
         <developerConnection>scm:git:git@github.com:danielburrell/schema.tf.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>schematf-0.0.26</tag>
     </scm>
 </project>
