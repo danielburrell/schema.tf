@@ -90,7 +90,7 @@
                                 <phase>deploy</phase>
                                 <configuration>
                                     <token>${secrettoken}</token>
-                                    <gemfuryUrl>https://push.fury.io/token/</gemfuryUrl>
+                                    <gemfuryUrl>https://push.fury.io/secret-token/</gemfuryUrl>
                                     <debFile>${project.build.directory}/schematf.deb</debFile>
                                 </configuration>
                                 <goals>
