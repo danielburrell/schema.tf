@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.co.solong</groupId>
     <artifactId>schematf</artifactId>
-    <version>0.0.28-SNAPSHOT</version>
+    <version>0.0.28</version>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -261,6 +261,6 @@
         <url>https://github.com/danielburrell/schema.tf</url>
         <connection>scm:git:git://github.com/danielburrell/schema.tf.git</connection>
         <developerConnection>scm:git:git@github.com:danielburrell/schema.tf.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>schematf-0.0.28</tag>
     </scm>
 </project>
