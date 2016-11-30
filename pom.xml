@@ -83,7 +83,7 @@
                     <plugin>
                         <groupId>uk.co.solong</groupId>
                         <artifactId>gemfury-maven-plugin</artifactId>
-                        <version>0.0.9</version>
+                        <version>0.0.10</version>
                         <executions>
                             <execution>
                                 <id>execution1</id>
