@@ -90,7 +90,6 @@
                                 <phase>deploy</phase>
                                 <configuration>
                                     <token>${secrettoken}</token>
-                                    <gemfuryUrl>https://push.fury.io/secret-token/</gemfuryUrl>
                                     <debFile>${project.build.directory}/schematf.deb</debFile>
                                 </configuration>
                                 <goals>
@@ -212,6 +211,10 @@
                                     </mapper>
                                 </data>
                             </dataSet>
+                            <signPackage>${jdeb.signPackage}</signPackage>
+                            <keyring>${jdeb.keyring}</keyring>
+                            <key>${jdeb.key}</key>
+                            <passphrase>${gpg.passphrase}</passphrase>
                         </configuration>
                     </execution>
                 </executions>
