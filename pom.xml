@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.co.solong</groupId>
     <artifactId>schematf</artifactId>
-    <version>0.0.30-SNAPSHOT</version>
+    <version>0.0.30</version>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -139,7 +139,7 @@
             <plugin>
                 <artifactId>jdeb</artifactId>
                 <groupId>org.vafer</groupId>
-                <version>1.3</version>
+                <version>1.5</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -264,6 +264,6 @@
         <url>https://github.com/danielburrell/schema.tf</url>
         <connection>scm:git:git://github.com/danielburrell/schema.tf.git</connection>
         <developerConnection>scm:git:git@github.com:danielburrell/schema.tf.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>schematf-0.0.30</tag>
     </scm>
 </project>
