@@ -1,269 +1,167 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>uk.co.solong</groupId>
-    <artifactId>schematf</artifactId>
-    <version>0.0.31-SNAPSHOT</version>
+    <artifactId>schema.tf</artifactId>
+    <version>2.0.0.RELEASE</version>
+    <packaging>jar</packaging>
+
+    <name>function-sample-aws</name>
+    <description>Spring Cloud Function Sample for AWS Lambda</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.4.0-SNAPSHOT</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <wrapper.version>1.0.17.RELEASE</wrapper.version>
+        <aws-lambda-events.version>2.0.2</aws-lambda-events.version>
+        <spring-cloud-function.version>3.1.0-SNAPSHOT</spring-cloud-function.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-function-adapter-aws</artifactId>
+        </dependency>
+
+
+        <!-- 		<dependency> -->
+        <!-- 			<groupId>org.springframework.cloud</groupId> -->
+        <!-- 			<artifactId>spring-cloud-starter-function-webflux</artifactId> -->
+        <!--  			<scope>provided</scope> -->
+        <!-- 		</dependency> -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-events</artifactId>
+            <version>${aws-lambda-events.version}</version>
+            <!-- 			<scope>provided</scope> -->
+        </dependency>
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-lambda-java-core</artifactId>
+            <version>1.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.twitter4j</groupId>
+            <artifactId>twitter4j-stream</artifactId>
+            <version>4.0.7</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+        <dependency>
+            <groupId>com.amazonaws</groupId>
+            <artifactId>aws-java-sdk-s3</artifactId>
+            <version>1.11.796</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-aws-secrets-manager-config</artifactId>
+            <version>2.2.2.RELEASE</version>
+        </dependency>
+
+    </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>io.spring.platform</groupId>
-                <artifactId>platform-bom</artifactId>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-function-dependencies</artifactId>
+                <version>${spring-cloud-function.version}</version>
                 <type>pom</type>
-                <version>1.1.2.RELEASE</version>
                 <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.springframework.boot.experimental</groupId>
+                        <artifactId>spring-boot-thin-layout</artifactId>
+                        <version>${wrapper.version}</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <configuration>
+                    <createDependencyReducedPom>false</createDependencyReducedPom>
+                    <shadedArtifactAttached>true</shadedArtifactAttached>
+                    <shadedClassifierName>aws</shadedClassifierName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
     <repositories>
         <repository>
-            <id>org.springframework.maven.release</id>
-            <name>Spring Maven Release Repository</name>
-            <url>http://maven.springframework.org/release</url>
-            <releases>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
                 <enabled>true</enabled>
-            </releases>
+            </snapshots>
+        </repository>
+        <repository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
         </repository>
     </repositories>
-    <dependencies>
-        <dependency>
-            <groupId>com.dropbox.core</groupId>
-            <artifactId>dropbox-core-sdk</artifactId>
-            <version>[1.7,1.8)</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-collections4</artifactId>
-            <version>4.0</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.inject</groupId>
-            <artifactId>javax.inject</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>uk.co.solong</groupId>
-            <artifactId>application</artifactId>
-            <version>0.0.11</version>
-        </dependency>
-        <dependency>
-            <groupId>uk.co.solong</groupId>
-            <artifactId>steam4j</artifactId>
-            <version>2.0.18</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jgit</groupId>
-            <artifactId>org.eclipse.jgit</artifactId>
-            <version>4.0.1.201506240215-r</version>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.social</groupId>
-            <artifactId>spring-social-twitter</artifactId>
-        </dependency>
-    </dependencies>
-    <profiles>
-        <profile>
-            <id>release</id>
-            <build>
-                <!-- include sources -->
-                <plugins>
-                    <plugin>
-                        <groupId>uk.co.solong</groupId>
-                        <artifactId>gemfury-maven-plugin</artifactId>
-                        <version>0.0.10</version>
-                        <executions>
-                            <execution>
-                                <id>execution1</id>
-                                <phase>deploy</phase>
-                                <configuration>
-                                    <token>${secrettoken}</token>
-                                    <debFile>${project.build.directory}/schematf.deb</debFile>
-                                </configuration>
-                                <goals>
-                                    <goal>gemfury</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>appassembler-maven-plugin</artifactId>
-                <version>1.8.1</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>assemble</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <includeConfigurationDirectoryInClasspath>true</includeConfigurationDirectoryInClasspath>
-                    <configurationDirectory>conf</configurationDirectory>
-                    <programs>
-                        <program>
-                            <mainClass>uk.co.solong.application.main.spring.java.AutoAnnotationWebApplication</mainClass>
-                            <id>start</id>
-                            <jvmSettings>
-                                <initialMemorySize>20m</initialMemorySize>
-                                <maxMemorySize>256m</maxMemorySize>
-                                <maxStackSize>128m</maxStackSize>
-                                <systemProperties>
-                                    <systemProperty>logback.configurationFile=logback-prod.xml</systemProperty>
-                                    <systemProperty>APP_ENV=prod</systemProperty>
-                                </systemProperties>
-                            </jvmSettings>
-                        </program>
-                    </programs>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>jdeb</artifactId>
-                <groupId>org.vafer</groupId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>jdeb</goal>
-                        </goals>
-                        <configuration>
-                            <deb>${project.build.directory}/${project.artifactId}.deb</deb>
-                            <verbose>true</verbose>
-                            <snapshotExpand>true</snapshotExpand>
-                            <!-- expand "SNAPSHOT" to what is in the "USER" env variable -->
-                            <snapshotEnv>USER</snapshotEnv>
-                            <verbose>true</verbose>
-                            <controlDir>${basedir}/src/deb/control</controlDir>
-                            <dataSet>
-                                <data>
-                                    <src>${project.build.directory}/appassembler/bin</src>
-                                    <type>directory</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/opt/solong/${project.artifactId}/${project.version}/bin</prefix>
-                                        <user>schematf</user>
-                                        <group>schematf</group>
-                                        <filemode>700</filemode>
-                                    </mapper>
-                                </data>
-                                <data>
-                                    <src>${project.build.directory}/appassembler</src>
-                                    <excludes>bin/**</excludes>
-                                    <type>directory</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/opt/solong/${project.artifactId}/${project.version}</prefix>
-                                        <user>schematf</user>
-                                        <group>schematf</group>
-                                        <filemode>600</filemode>
-                                    </mapper>
-                                </data>
-                                <data>
-                                    <type>template</type>
-                                    <paths>
-                                        <path>/opt/solong/${project.artifactId}/${project.version}/conf</path>
-                                        <path>etc/${project.artifactId}</path>
-                                        <path>var/lib/${project.artifactId}</path>
-                                        <path>var/log/${project.artifactId}</path>
-                                        <path>var/run/${project.artifactId}</path>
-                                    </paths>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <user>loader</user>
-                                        <group>loader</group>
-                                    </mapper>
-                                </data>
-                                <data>
-                                    <type>link</type>
-                                    <linkName>/opt/solong/${project.artifactId}/current</linkName>
-                                    <linkTarget>/opt/solong/${project.artifactId}/${project.version}</linkTarget>
-                                    <symlink>true</symlink>
-                                </data>
-                                <data>
-                                    <src>src/deb/systemd/${project.artifactId}.service</src>
-                                    <type>file</type>
-                                    <mapper>
-                                        <type>perm</type>
-                                        <prefix>/etc/systemd/system/</prefix>
-                                        <filemode>644</filemode>
-                                        <user>root</user>
-                                        <group>root</group>
-                                    </mapper>
-                                </data>
-                            </dataSet>
-                            <signPackage>${jdeb.signPackage}</signPackage>
-                            <keyring>${jdeb.keyring}</keyring>
-                            <key>${jdeb.key}</key>
-                            <passphrase>${gpg.passphrase}</passphrase>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-                <version>2.3.2</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-                <configuration>
-                    <checkModificationExcludes>
-                        <checkModificationExclude>pom.xml</checkModificationExclude>
-                    </checkModificationExcludes>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <releaseProfiles>release</releaseProfiles>
-                    <goals>deploy</goals>
-                </configuration>
-            </plugin>
-            <!-- change this next plugin at some point to not skip, but instead publish to nexus -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-    <name>schematf</name>
-    <url>www.solong.co.uk/schematf</url>
-    <description>A service for tracking, displaying and sending notifications for the Team Fortress 2 item schema.</description>
-    <organization>
-        <name>So Long</name>
-        <url>http://www.solong.co.uk</url>
-    </organization>
-    <scm>
-        <url>https://github.com/danielburrell/schema.tf</url>
-        <connection>scm:git:git://github.com/danielburrell/schema.tf.git</connection>
-        <developerConnection>scm:git:git@github.com:danielburrell/schema.tf.git</developerConnection>
-        <tag>HEAD</tag>
-    </scm>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>spring-snapshots</id>
+            <name>Spring Snapshots</name>
+            <url>https://repo.spring.io/snapshot</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>spring-milestones</id>
+            <name>Spring Milestones</name>
+            <url>https://repo.spring.io/milestone</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
+
 </project>

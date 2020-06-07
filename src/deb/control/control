@@ -1,8 +1,0 @@
-Package: [[name]]
-Version: [[version]]
-Section: misc
-Priority: low
-Architecture: all
-Depends: 
-Description: [[description]]
-Maintainer: daniel@solong.co.uk

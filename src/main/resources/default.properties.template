@@ -1,7 +1,0 @@
-#Properties file template. Copy and paste this file to generate new environments.
-steam.apikey=
-twitter.consumerKey=
-twitter.consumerSecret=
-twitter.accessToken=
-twitter.accessTokenSecret=
-dropbox.token=
