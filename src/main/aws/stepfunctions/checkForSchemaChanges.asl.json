@@ -1,0 +1,92 @@
+{
+  "Comment": "Checks for new schemas, stores, and publishes as necessary",
+  "StartAt": "GenerateParameters",
+  "States": {
+    "GenerateParameters": {
+      "Type": "Pass",
+      "Next": "CheckForSchemaChanges",
+      "Parameters": {
+        "forceUpdate" : true
+      },
+      "ResultPath": "$.generateParametersResult"
+    },
+    "CheckForSchemaChanges": {
+      "ResultPath": "$.checkForSchemaChangesResults",
+      "InputPath": "$.generateParametersResult.forceUpdate",
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:245286727053:function:checkForSchemaChanges",
+      "Next": "HasSchemaChanged",
+      "Catch": [
+        {"ErrorEquals": ["Unauthorized"],"Next": "HandleUnauthorized"},
+        {"ErrorEquals": ["SteamIntermittent"],"Next": "HandleSteamIntermittent"}
+      ]
+    },
+    "HasSchemaChanged": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Variable": "$.checkForSchemaChangesResults.schemaChanged",
+          "BooleanEquals": true,
+          "Next": "PassCurrentSchemaId"
+        }
+      ],
+      "Default": "UpdateLastChecked"
+    },
+    "PassCurrentSchemaId": {
+      "Type": "Pass",
+      "Next": "GenerateSchemaDiff",
+      "Parameters": {
+        "current.$" : "$.checkForSchemaChangesResults.schemaId"
+      },
+      "ResultPath": "$.passCurrentSchemaIdResults"
+    },
+    "GenerateSchemaDiff": {
+      "InputPath": "$.passCurrentSchemaIdResults",
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:245286727053:function:generateSchemaDiff",
+      "Next": "NotifyTwitter",
+      "Retry": [{
+        "ErrorEquals": [
+          "States.ALL"
+        ],
+        "IntervalSeconds": 5,
+        "MaxAttempts": 5,
+        "BackoffRate": 2.0
+      }
+      ],
+      "ResultPath" : "$.generateSchemaDiffResult"
+    },
+    "UpdateLastChecked": {
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:245286727053:function:updateLastChecked",
+      "End": true
+    },
+    "NotifyTwitter": {
+      "InputPath" : "$.generateSchemaDiffResult",
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:245286727053:function:notifyTwitter",
+      "Next": "UpdateLastChecked",
+      "Retry": [{
+        "ErrorEquals": [
+          "States.ALL"
+        ],
+        "IntervalSeconds": 5,
+        "MaxAttempts": 1,
+        "BackoffRate": 2.0
+      }
+      ],
+      "ResultPath": "$.notifyTwitterResult"
+    },
+    "HandleUnauthorized":{
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:245286727053:function:handleUnauthorized",
+      "Next": "UpdateLastChecked"
+    },
+    "HandleSteamIntermittent":{
+      "Type": "Task",
+      "Resource": "arn:aws:lambda:eu-west-1:245286727053:function:handleSteamIntermittent",
+      "Next": "UpdateLastChecked"
+    }
+
+  }
+}
